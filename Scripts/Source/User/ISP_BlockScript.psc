@@ -7,9 +7,9 @@ Event OnWorkshopObjectPlaced(ObjectReference akReference)
 EndEvent
 
 Event ISP_Script.OnSnapped(ISP_Script akSender, Var[] akArgs)
-	Debug.Trace("Snapped: " + Self)
+	Debug.MessageBox("Snapped: " + Self)
 EndEvent
 
 Event ISP_Script.OnUnsnapped(ISP_Script akSender, Var[] akArgs)
-	Debug.Trace("Unsnapped: " + Self)
+	Debug.MessageBox("Unsnapped: " + Self)
 EndEvent

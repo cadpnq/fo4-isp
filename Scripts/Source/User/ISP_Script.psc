@@ -113,9 +113,13 @@ Function SendOnUnsnappedEvent(ObjectReference objA, ObjectReference objB, String
 EndFunction
 
 Function HandleSnap(ObjectReference objA, ObjectReference objB, String NodeName)
+	SnapPoints[SnapPoints.FindStruct("Name", NodeName)].Object = objB
+
 	SendOnSnappedEvent(objA, objB, NodeName)
 EndFunction
 
 Function HandleUnsnap(ObjectReference objA, ObjectReference objB, String NodeName)
+	SnapPoints[SnapPoints.FindStruct("Name", NodeName)].Object = None
+
 	SendOnUnsnappedEvent(objA, objB, NodeName)
 EndFunction
