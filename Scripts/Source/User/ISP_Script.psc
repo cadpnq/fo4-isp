@@ -12,6 +12,7 @@ Struct SnapPoint
 	ObjectReference Marker Hidden
 	ObjectReference Object Hidden
 	String Target
+	String Type
 EndStruct
 
 Event OnWorkshopObjectPlaced(ObjectReference akReference)
@@ -33,14 +34,19 @@ Event OnWorkshopObjectDestroyed(ObjectReference akReference)
 EndEvent
 
 Function PlaceMarkers()
+	SnapPoint SP
+	
 	int i
 	While(i < SnapPoints.Length)
-		SnapPoints[i].Marker = PlaceAtNode(SnapPoints[i].Name, DummyMarker as Form, 1, False, False, False, True)
-		SnapPoints[i].Marker.SetLinkedRef(Self, None)
-		SnapPoints[i].Marker.SetPropertyValue("Name", SnapPoints[i].Name)
+		SP = SnapPoints[i]
 		
-		If(SnapPoints[i].Target == "")
-			SnapPoints[i].Target = SnapPoints[i].Name
+		SP.Marker = PlaceAtNode(SP.Name, DummyMarker as Form, 1, False, False, False, True)
+		SP.Marker.SetLinkedRef(Self, None)
+		SP.Marker.SetPropertyValue("Name", SP.Name)
+		SP.Marker.SetPropertyValue("Type", SP.Type)
+		
+		If(SP.Target == "")
+			SP.Target = SP.Name
 		EndIf
 		
 		i += 1
@@ -49,7 +55,7 @@ EndFunction
 
 Function Update()
 	ObjectReference[] FoundMarkers
-	ObjectReference Marker
+	ISP_MarkerScript Marker
 	SnapPoint SP
 	
 	int i
@@ -60,9 +66,9 @@ Function Update()
 		If(FoundMarkers.Length > 1)
 			int j
 			While(j < FoundMarkers.Length)
-				Marker = FoundMarkers[j]
+				Marker = FoundMarkers[j] as ISP_MarkerScript
 			
-				If((Marker.GetPropertyValue("Name") as String == SP.Target) && (Marker.GetLinkedRef(None) != Self))
+				If(IsValidMarker(SP, Marker))
 					; We unsnap from one thing and then snap back to another
 					If(SP.Object != None)
 						SendOnUnsnappedEvent(Self, SP.Object, SP.Name)
@@ -90,6 +96,18 @@ Function Update()
 		
 		i += 1
 	EndWhile
+EndFunction
+
+bool Function IsValidMarker(SnapPoint SP, ISP_MarkerScript Marker)
+	If(Marker.GetLinkedRef(None) == Self)
+		Return False
+	ElseIf(SP.Type != "" && SP.Type == Marker.Type)
+		Return True
+	ElseIF(Marker.Name == SP.Target)
+		Return True
+	Else
+		Return False
+	EndIf
 EndFunction
 
 Function SendOnSnappedEvent(ObjectReference objA, ObjectReference objB, String NodeName)
