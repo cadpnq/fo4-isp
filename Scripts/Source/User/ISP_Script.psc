@@ -33,7 +33,7 @@ Event OnWorkshopObjectDestroyed(ObjectReference akReference)
 		
 		SP.Marker.Delete()
 		If(SP.Object != None)
-			Unsnap(SP)
+			UnSnap(SP)
 		EndIf
 
 		i += 1
@@ -78,7 +78,7 @@ Function Update()
 				If(IsValidMarker(SP, Marker))
 					; We unsnap from one thing and then snap back to another
 					If(SP.Object != None)
-						Unsnap(SP)
+						UnSnap(SP)
 					EndIf
 			
 					SP.Object = Marker.GetLinkedRef(None)
@@ -93,7 +93,7 @@ Function Update()
 		Else
 			; something was just unsnapped
 			If(SP.Object != None)
-				Unsnap(SP)
+				UnSnap(SP)
 			EndIf
 			
 			SP.Object = None
@@ -115,7 +115,7 @@ bool Function IsValidMarker(SnapPoint SP, ISP_MarkerScript Marker)
 	EndIf
 EndFunction
 
-Function Unsnap(SnapPoint SP)
+Function UnSnap(SnapPoint SP)
 	SendOnUnsnappedEvent(Self, SP.Object, SP.Name)
 	(SP.Object as ISP_Script).HandleUnsnap(SP.Object, Self, SP.Target)
 EndFunction
