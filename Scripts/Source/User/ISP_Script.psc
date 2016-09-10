@@ -25,9 +25,17 @@ Event OnWorkshopObjectMoved(ObjectReference akReference)
 EndEvent
 
 Event OnWorkshopObjectDestroyed(ObjectReference akReference)
+	SnapPoint SP
+	
 	int i
 	While(i < SnapPoints.Length)
-		SnapPoints[i].Marker.Delete()
+		SP = SnapPoints[i]
+		
+		SP.Marker.Delete()
+		If(SP.Object != None)
+			SendOnUnsnappedEvent(Self, SP.Object, SP.Name)
+			(SP.Object as ISP_Script).HandleUnsnap(SP.Object, Self, SP.Target)
+		EndIf
 
 		i += 1
 	EndWhile
