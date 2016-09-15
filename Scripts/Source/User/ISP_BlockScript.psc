@@ -6,6 +6,12 @@ Event OnWorkshopObjectPlaced(ObjectReference akReference)
 	RegisterForCustomEvent(foo, "OnUnsnapped")
 EndEvent
 
+Event OnWorkshopObjectDestroyed(ObjectReference akReference)
+	ISP_Script foo = (Self as ObjectReference) as ISP_Script
+	UnregisterForCustomEvent(foo, "OnSnapped")
+	UnregisterForCustomEvent(foo, "OnUnsnapped")
+EndEvent
+
 Event ISP_Script.OnSnapped(ISP_Script akSender, Var[] akArgs)
 	Debug.MessageBox("Snapped: " + Self)
 EndEvent

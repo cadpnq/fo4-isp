@@ -32,6 +32,7 @@ Event OnWorkshopObjectDestroyed(ObjectReference akReference)
 		SP = SnapPoints[i]
 		
 		SP.Marker.Delete()
+		SP.Marker = None
 		If(SP.Object != None)
 			Unsnap(SP)
 		EndIf
@@ -106,6 +107,8 @@ EndFunction
 bool Function IsValidMarker(SnapPoint SP, ISP_MarkerScript Marker)
 	If(Marker.GetLinkedRef(None) == Self)
 		Return False
+	ElseIf(Marker.GetLinkedRef(None).IsEnabled() == False)
+		Return False
 	ElseIf(SP.Type != "" && SP.Type == Marker.Type)
 		Return True
 	ElseIF(Marker.Name == SP.Target)
@@ -118,6 +121,7 @@ EndFunction
 Function Unsnap(SnapPoint SP)
 	SendOnUnsnappedEvent(Self, SP.Object, SP.Name)
 	(SP.Object as ISP_Script).HandleUnsnap(SP.Object, Self, SP.Target)
+	SP.Object = None
 EndFunction
 
 Function SendOnSnappedEvent(ObjectReference objA, ObjectReference objB, String NodeName)
