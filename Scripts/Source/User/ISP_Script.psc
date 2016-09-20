@@ -9,10 +9,10 @@ CustomEvent OnUnsnapped
 
 Struct SnapPoint
 	String Name
-	ObjectReference Marker Hidden
-	ObjectReference Object Hidden
 	String Target
 	String Type
+	ObjectReference Marker Hidden
+	ObjectReference Object Hidden
 EndStruct
 
 Event OnWorkshopObjectPlaced(ObjectReference akReference)
@@ -25,20 +25,7 @@ Event OnWorkshopObjectMoved(ObjectReference akReference)
 EndEvent
 
 Event OnWorkshopObjectDestroyed(ObjectReference akReference)
-	SnapPoint SP
-	
-	int i
-	While(i < SnapPoints.Length)
-		SP = SnapPoints[i]
-		
-		SP.Marker.Delete()
-		SP.Marker = None
-		If(SP.Object != None)
-			Unsnap(SP)
-		EndIf
-
-		i += 1
-	EndWhile
+	RemoveMarkers()
 EndEvent
 
 Function PlaceMarkers()
@@ -57,6 +44,23 @@ Function PlaceMarkers()
 			SP.Target = SP.Name
 		EndIf
 		
+		i += 1
+	EndWhile
+EndFunction
+
+Function RemoveMarkers()
+	SnapPoint SP
+	
+	int i
+	While(i < SnapPoints.Length)
+		SP = SnapPoints[i]
+		
+		SP.Marker.Delete()
+		SP.Marker = None
+		If(SP.Object != None)
+			Unsnap(SP)
+		EndIf
+
 		i += 1
 	EndWhile
 EndFunction
@@ -122,6 +126,16 @@ Function Unsnap(SnapPoint SP)
 	SendOnUnsnappedEvent(Self, SP.Object, SP.Name)
 	(SP.Object as ISP_Script).HandleUnsnap(SP.Object, Self, SP.Target)
 	SP.Object = None
+EndFunction
+
+Function Register(ObjectReference ref)
+	ref.RegisterForCustomEvent(Self, "OnSnapped")
+	ref.RegisterForCustomEvent(Self, "OnUnsnapped")
+EndFunction
+
+Function Unregister(ObjectReference ref)
+	ref.UnregisterForCustomEvent(Self, "OnSnapped")
+	ref.UnregisterForCustomEvent(Self, "OnUnsnapped")
 EndFunction
 
 Function SendOnSnappedEvent(ObjectReference objA, ObjectReference objB, String NodeName)
