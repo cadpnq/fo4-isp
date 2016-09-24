@@ -128,6 +128,15 @@ Function Unsnap(SnapPoint SP)
 	SP.Object = None
 EndFunction
 
+ObjectReference Function GetObject(string Name)
+	int index = SnapPoints.FindStruct("Name", Name)
+	If(index == -1)
+		Return None
+	Else
+		Return SnapPoints[index].Object
+	EndIf
+EndFunction
+
 Function Register(ObjectReference ref)
 	ref.RegisterForCustomEvent(Self, "OnSnapped")
 	ref.RegisterForCustomEvent(Self, "OnUnsnapped")
