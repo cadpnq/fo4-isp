@@ -2,4 +2,27 @@
 
 Intelligent Snap Points (ISP) is a pure Papyrus library which adds two new events to settlement items: OnSnapped and OnUnsnapped.
 
-Some implementation details are subject to change; therefore, it is not quite mature enough for general use. That said, I'm about to finalize what will be the 1.0 API. When that is done I will publish some documentation and you can use ISP without being afraid of me breaking compatibility between updates. If I end up needing to change things radically for some reason I will keep the older versions of the API around for backwards compatibility.
+example code for an object that brings up a message box whenever it is (un)snapped to/from something:
+```papyrus
+Scriptname ISP_BlockScript extends ObjectReference
+
+ISP_Script ISPSelf
+
+Event OnWorkshopObjectPlaced(ObjectReference akReference)
+	ISPSelf = (Self as ObjectReference) as ISP_Script
+	ISPSelf.Register(Self)
+EndEvent
+
+Event OnWorkshopObjectDestroyed(ObjectReference akReference)
+	ISPSelf.Unregister(Self)
+EndEvent
+
+
+Event ISP_Script.OnSnapped(ISP_Script akSender, Var[] akArgs)
+	Debug.MessageBox("Snapped: " + Self)
+EndEvent
+
+Event ISP_Script.OnUnsnapped(ISP_Script akSender, Var[] akArgs)
+	Debug.MessageBox("Unsnapped: " + Self)
+EndEvent
+```
